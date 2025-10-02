@@ -24,14 +24,20 @@ int main() {
   std::cout << std::string(30, '=') << std::endl;
 
   {
-    const WrongAnimal* meta = new WrongAnimal();
-    const WrongAnimal* j = new WrongDog();
-    const WrongAnimal* i = new WrongCat();
+    WrongAnimal wa;
+    WrongCat wc;
+    WrongDog wd;
+
+    const WrongAnimal* meta = &wa;
+    const WrongAnimal* j = &wc;
+    const WrongAnimal* i = &wd;
+
     std::cout << j->getType() << " " << std::endl;
     std::cout << i->getType() << " " << std::endl;
+
     i->makeSound();
     j->makeSound();
     meta->makeSound();
-    return 0;
   }
+  return 0;
 }
