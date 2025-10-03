@@ -38,6 +38,6 @@ void Cat::setIdea(size_t idx, const std::string& s) {
   brain->setIdea(idx, s);
 }
 
-const std::string Cat::getIdea(size_t idx) const {
+const std::string& Cat::getIdea(size_t idx) const {
   return brain->getIdea(idx);
 }

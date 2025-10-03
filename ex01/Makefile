@@ -1,4 +1,4 @@
-NAME := ex00
+NAME := ex01
 
 CXX := c++
 CXXFLAGS := -Wall -Wextra -Werror -std=c++98 -pedantic
@@ -8,7 +8,7 @@ INCDIR := incs
 OBJDIR := objs
 DEPDIR := deps
 
-SRCS := main.cpp Animal.cpp Cat.cpp Dog.cpp \
+SRCS := main.cpp Animal.cpp Brain.cpp Cat.cpp Dog.cpp \
 	WrongAnimal.cpp WrongCat.cpp WrongDog.cpp
 
 SRCS := $(addprefix $(SRCDIR)/,$(SRCS))

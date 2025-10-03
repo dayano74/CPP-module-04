@@ -1,6 +1,8 @@
 #ifndef DOG_HPP
 #define DOG_HPP
 
+#include <cstddef>
+
 #include "Animal.hpp"
 #include "Brain.hpp"
 
@@ -17,7 +19,7 @@ class Dog : public Animal {
   virtual void makeSound() const;
 
   void setIdea(size_t idx, const std::string& s);
-  const std::string getIdea(size_t idx) const;
+  const std::string& getIdea(size_t idx) const;
 };
 
 #endif  // DOG_HPP

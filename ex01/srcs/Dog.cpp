@@ -38,6 +38,6 @@ void Dog::setIdea(size_t idx, const std::string& s) {
   brain->setIdea(idx, s);
 }
 
-const std::string Dog::getIdea(size_t idx) const {
+const std::string& Dog::getIdea(size_t idx) const {
   return brain->getIdea(idx);
 }
