@@ -10,7 +10,8 @@ DEPDIR := deps
 
 SRCS := main.cpp \
 	AMateria.cpp Ice.cpp Cure.cpp \
-	CharacterMock.cpp
+	CharacterMock.cpp Character.cpp \
+	MateriaSource.cpp
 
 SRCS := $(addprefix $(SRCDIR)/,$(SRCS))
 OBJS := $(SRCS:$(SRCDIR)/%.cpp=$(OBJDIR)/%.o)

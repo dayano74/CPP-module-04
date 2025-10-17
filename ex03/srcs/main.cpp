@@ -1,31 +1,94 @@
 #include <iostream>
 
 #include "../incs/AMateria.hpp"
-#include "../incs/CharacterMock.hpp"
+#include "../incs/Character.hpp"
 #include "../incs/Cure.hpp"
 #include "../incs/ICharacter.hpp"
+#include "../incs/IMateriaSource.hpp"
 #include "../incs/Ice.hpp"
+#include "../incs/MateriaSource.hpp"
 
 int main() {
-  CharacterMock hero("Hero");
+  std::cout << "\033[33m=== Test 1: Basic equip and use ===\033[0m" << std::endl;
+  IMateriaSource* source = new MateriaSource();
+  source->learnMateria(new Ice());
+  source->learnMateria(new Cure());
 
-  AMateria* ice = new Ice();
-  AMateria* iceClone = ice->clone();
+  Character hero("Hero");
+  Character villain("Villain");
 
-  AMateria* cure = new Cure();
-  AMateria* cureClone = cure->clone();
+  AMateria* m1 = source->createMateria("ice");
+  AMateria* m2 = source->createMateria("cure");
 
-  ice->use(hero);
-  iceClone->use(hero);
+  hero.equip(m1);
+  hero.equip(m2);
 
-  cure->use(hero);
-  cureClone->use(hero);
+  hero.use(0, villain);
+  hero.use(1, villain);
 
-  delete cureClone;
-  delete cure;
-  delete iceClone;
-  delete ice;
+  std::cout << "\033[33m=== Test 2: Equip full inventory ===\033[0m" << std::endl;
+  AMateria* m3 = source->createMateria("ice");
+  AMateria* m4 = source->createMateria("cure");
+  AMateria* m5 = source->createMateria("ice");
 
-  std::cout << "\033[32mok\033[0m" << std::endl;
+  hero.equip(m3);
+  hero.equip(m4);
+  hero.equip(m5);
+
+  delete m5;
+
+  std::cout << "\033[33m=== Test 3: Unequip and re-equip ===\033[0m" << std::endl;
+  hero.unequip(1);
+  AMateria* m6 = source->createMateria("cure");
+  hero.equip(m6);
+
+  hero.use(0, villain);
+  hero.use(1, villain);
+
+  std::cout << "\033[33m=== Test 4: Out of range use ===\033[0m" << std::endl;
+  hero.use(4, villain);
+  hero.use(-1, villain);
+
+  std::cout << "\033[33m=== Test 5: Use empty slot ===\033[0m" << std::endl;
+  hero.unequip(2);
+  hero.use(2, villain);
+
+  std::cout << "\033[33m=== Test 6: Create non-existent materia type ===\033[0m" << std::endl;
+  AMateria* m7 = source->createMateria("fire");
+  if (m7 == NULL) {
+    std::cout << "createMateria returned NULL for unknown type (expected)" << std::endl;
+  }
+
+  std::cout << "\033[33m=== Test 7: Character copy constructor ===\033[0m" << std::endl;
+  Character copy(hero);
+  copy.use(0, villain);
+  copy.use(1, villain);
+
+  std::cout << "\033[33m=== Test 8: Character assignment operator ===\033[0m" << std::endl;
+  Character assign("Assign");
+  assign = hero;
+  assign.use(0, villain);
+  assign.use(1, villain);
+
+  std::cout << "\033[33m=== Test 9: MateriaSource copy constructor ===\033[0m" << std::endl;
+  MateriaSource source2(*((MateriaSource*)source));
+  AMateria* m8 = source2.createMateria("ice");
+  if (m8 != NULL) {
+    std::cout << "MateriaSource copy works (created ice)" << std::endl;
+    delete m8;
+  }
+
+  std::cout << "\033[33m=== Test 10: MateriaSource assignment operator ===\033[0m" << std::endl;
+  MateriaSource source3;
+  source3 = *((MateriaSource*)source);
+  AMateria* m9 = source3.createMateria("cure");
+  if (m9 != NULL) {
+    std::cout << "MateriaSource assignment works (created cure)" << std::endl;
+    delete m9;
+  }
+
+  delete source;
+
+  std::cout << "\033[32m=== ALL TESTS OK ===\033[0m" << std::endl;
   return 0;
 }
