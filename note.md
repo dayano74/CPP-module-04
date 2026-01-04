@@ -1,0 +1,69 @@
+## CPP-module04
+
+## ex00
+
+### なぜWrongCatはWrongAnimalの音を出力するのか？
+
+`virtual`キーワードを付けていないため、WrongCatはWrongAnimalの音を出力する。
+
+これは**静的バインディング（コンパイル時バインディング）** と **動的バインディング（実行時バインディング）** の違い：
+
+#### `virtual`がない場合（WrongAnimal/WrongCat）
+- ポインタの型（WrongAnimal*）に基づいてコンパイル時に関数が決定される
+- WrongAnimal::makeSound()が呼ばれる
+- **静的バインディング**
+
+#### `virtual`がある場合（Animal/Cat）
+- 実際のオブジェクトの型（Cat）に基づいて実行時に関数が決定される
+- Cat::makeSound()が呼ばれる
+- **動的バインディング**
+
+```cpp
+WrongAnimal* wrongCat = new WrongCat();
+wrongCat->makeSound(); // WrongAnimal の音（ポインタの型で決定）
+
+Animal* cat = new Cat();
+cat->makeSound(); // Cat の音（実際のオブジェクトの型で決定）
+```
+
+**結論**: ポリモーフィズム（多態性）を正しく機能させるために`virtual`が必要。
+
+### なぜvirtualが必要なのか？
+
+`virtual`が必要な理由は、**基底クラスのポインタや参照を通じて派生クラスの正しいメソッドを呼び出すため**。
+
+#### `virtual`がない場合の問題
+
+```cpp
+Animal* animal = new Cat();
+animal->makeSound();  // Catの鳴き声を期待
+delete animal;        // Catのデストラクタを期待
+```
+
+`virtual`がないと：
+- `animal`のポインタ型は`Animal*`
+- コンパイラは**ポインタの型**だけを見て、`Animal::makeSound()`を呼ぶ
+- `Animal`のデストラクタだけが呼ばれ、`Cat`のデストラクタは呼ばれない（メモリリーク）
+
+#### `virtual`がある場合
+
+```cpp
+class Animal {
+    virtual void makeSound() { ... }
+    virtual ~Animal() { ... }
+};
+```
+
+- コンパイラは**仮想関数テーブル（vtable）** を作成
+- 実行時に**実際のオブジェクトの型**（この場合`Cat`）を確認
+- `Cat::makeSound()`と`Cat`のデストラクタが正しく呼ばれる
+
+#### 実用的な理由
+
+1. **ポリモーフィズム**: 異なる派生クラスを同じ基底クラスのポインタで扱える
+2. **安全なメモリ管理**: デストラクタが正しく呼ばれる
+3. **柔軟な設計**: 基底クラスのインターフェースで、派生クラス固有の動作を実現
+
+**重要**: 継承を使う場合、基底クラスのデストラクタは必ず`virtual`にすべき。
+
+
