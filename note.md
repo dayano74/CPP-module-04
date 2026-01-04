@@ -148,3 +148,187 @@ delete dog1.brain;  // dog2.brainは影響を受けない
 **重要**: ポインタメンバを持つクラスでは、必ずDeep Copyを実装すべき。
 
 
+
+
+## ex02
+
+### 抽象化とは？
+
+**抽象化（Abstraction）** とは、**具体的な実装の詳細を隠して、重要な概念や機能だけを表現する**プログラミングの技法。
+
+#### 日常の例
+- **「動物」**: 抽象的な概念。実際には「犬」「猫」などの具体的な動物しか存在しない
+- **「乗り物」**: 抽象的な概念。実際には「車」「電車」「飛行機」などが存在する
+
+#### C++での抽象化
+
+##### 1. 抽象クラス（Abstract Class）
+少なくとも1つの**純粋仮想関数**を持つクラス。インスタンス化できない。
+
+```cpp
+class Animal {  // 抽象クラス
+public:
+    virtual void makeSound() const = 0;  // 純粋仮想関数
+    virtual ~Animal() {}
+};
+
+// Animal animal;  // エラー！抽象クラスはインスタンス化できない
+```
+
+##### 2. 具象クラス（Concrete Class）
+抽象クラスを継承し、すべての純粋仮想関数を実装したクラス。インスタンス化できる。
+
+```cpp
+class Dog : public Animal {  // 具象クラス
+public:
+    void makeSound() const override {  // 実装を提供
+        std::cout << "Woof!" << std::endl;
+    }
+};
+
+Dog dog;  // OK！具象クラスはインスタンス化できる
+```
+
+#### 抽象化の利点
+
+1. **インターフェースの統一**
+   ```cpp
+   Animal* animals[2];
+   animals[0] = new Dog();
+   animals[1] = new Cat();
+
+   for (int i = 0; i < 2; i++) {
+       animals[i]->makeSound();  // 統一されたインターフェース
+   }
+   ```
+
+2. **不正なインスタンス化を防ぐ**
+   ```cpp
+   // Animal animal;  // コンパイルエラー
+   // 「抽象的な動物」は存在しないので、これは正しい制約
+   ```
+
+3. **設計の明確化**
+   - 基底クラスは「何をすべきか」を定義（インターフェース）
+   - 派生クラスは「どうやるか」を実装（具体的な動作）
+
+#### まとめ
+
+| 概念 | 説明 | 例 |
+|------|------|-----|
+| **抽象化** | 詳細を隠し、本質だけを表現 | Animal（抽象） |
+| **具象化** | 具体的な実装を提供 | Dog, Cat（具象） |
+| **純粋仮想関数** | `= 0`で宣言された関数 | `virtual void makeSound() = 0;` |
+| **抽象クラス** | 純粋仮想関数を持つクラス | インスタンス化不可 |
+
+**ex02の目的**: `Animal`は抽象的な概念なので、直接インスタンス化できないようにする（抽象クラス化）。
+
+
+### 純粋仮想関数とは？
+
+**純粋仮想関数（Pure Virtual Function）** とは、**実装を持たず、派生クラスで必ず実装しなければならない関数**のこと。
+
+#### 構文
+
+```cpp
+class Animal {
+public:
+    virtual void makeSound() const = 0;  // 純粋仮想関数
+    //                              ^^^^
+    //                              これが純粋仮想関数の印
+};
+```
+
+`= 0` を付けることで、「この関数は実装を持たない」ことを宣言する。
+
+#### 通常の仮想関数との違い
+
+##### 通常の仮想関数
+```cpp
+class Animal {
+public:
+    virtual void makeSound() const {
+        std::cout << "Some sound" << std::endl;  // 実装がある
+    }
+};
+
+Animal animal;  // OK！インスタンス化できる
+```
+
+##### 純粋仮想関数
+```cpp
+class Animal {
+public:
+    virtual void makeSound() const = 0;  // 実装がない
+};
+
+Animal animal;  // エラー！インスタンス化できない
+```
+
+#### 純粋仮想関数の目的
+
+1. **抽象クラスを作る**
+   - 少なくとも1つの純粋仮想関数があると、そのクラスは抽象クラスになる
+   - 抽象クラスは直接インスタンス化できない
+
+2. **派生クラスに実装を強制する**
+   ```cpp
+   class Dog : public Animal {
+   public:
+       void makeSound() const override {  // 必ず実装が必要
+           std::cout << "Woof!" << std::endl;
+       }
+   };
+
+   // もし実装しなければ、Dogも抽象クラスになる
+   ```
+
+3. **インターフェースを定義する**
+   - 基底クラスは「何をすべきか」だけを定義
+   - 派生クラスが「どうやるか」を実装
+
+#### 実例
+
+```cpp
+class Shape {  // 抽象クラス
+public:
+    virtual double area() const = 0;      // 純粋仮想関数
+    virtual double perimeter() const = 0; // 純粋仮想関数
+    virtual ~Shape() {}
+};
+
+class Circle : public Shape {
+    double radius;
+public:
+    Circle(double r) : radius(r) {}
+
+    double area() const override {
+        return 3.14 * radius * radius;
+    }
+
+    double perimeter() const override {
+        return 2 * 3.14 * radius;
+    }
+};
+
+// Shape shape;      // エラー！
+Circle circle(5.0);  // OK！
+```
+
+#### まとめ
+
+| 項目 | 通常の仮想関数 | 純粋仮想関数 |
+|------|--------------|------------|
+| 宣言 | `virtual void func()` | `virtual void func() = 0` |
+| 実装 | あり（基底クラスに） | なし |
+| オーバーライド | 任意 | 必須 |
+| クラスの性質 | 具象クラス | 抽象クラス |
+| インスタンス化 | 可能 | 不可能 |
+
+**重要**: 純粋仮想関数は、派生クラスに特定の関数の実装を強制するための仕組み。
+
+
+
+## ex03
+
+
