@@ -6,10 +6,9 @@ Dog::Dog() : Animal(), brain(new Brain()) {
             << type << std::endl;
 }
 
-Dog::Dog(const Dog& other) : Animal(other), brain(0) {
+Dog::Dog(const Dog& other) : Animal(other), brain(new Brain(*other.brain)) {
   std::cout << "[Dog] copy constructor : type = "
             << type << std::endl;
-  brain = new Brain(*other.brain);
 }
 
 Dog& Dog::operator=(const Dog& other) {

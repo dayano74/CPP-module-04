@@ -6,10 +6,9 @@ Cat::Cat() : Animal(), brain(new Brain()) {
             << type << std::endl;
 }
 
-Cat::Cat(const Cat& other) : Animal(other), brain(0) {
+Cat::Cat(const Cat& other) : Animal(other), brain(new Brain(*other.brain)) {
   std::cout << "[Cat] copy constructor : type = "
             << type << std::endl;
-  brain = new Brain(*other.brain);
 }
 
 Cat& Cat::operator=(const Cat& other) {
