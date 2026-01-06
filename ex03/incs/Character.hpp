@@ -21,6 +21,8 @@ class Character : public ICharacter {
   ~Character();
 
   std::string const& getName() const;
+  AMateria* getMateria(int idx) const;
+
   virtual void equip(AMateria* m);
   virtual void unequip(int idx);
   virtual void use(int idx, ICharacter& target);

@@ -57,6 +57,7 @@ int main() {
     delete m5;
 
     std::cout << "\033[33m=== Test 3: Unequip and re-equip ===\033[0m" << std::endl;
+    AMateria* unequiped = hero.getMateria(1);
     hero.unequip(1);
     AMateria* m6 = source->createMateria("cure");
     hero.equip(m6);
@@ -64,13 +65,19 @@ int main() {
     hero.use(0, villain);
     hero.use(1, villain);
 
+    delete unequiped;
+
     std::cout << "\033[33m=== Test 4: Out of range use ===\033[0m" << std::endl;
     hero.use(4, villain);
     hero.use(-1, villain);
 
     std::cout << "\033[33m=== Test 5: Use empty slot ===\033[0m" << std::endl;
+    unequiped = hero.getMateria(2);
+
     hero.unequip(2);
     hero.use(2, villain);
+
+    delete unequiped;
 
     std::cout << "\033[33m=== Test 6: Create non-existent materia type ===\033[0m" << std::endl;
     AMateria* m7 = source->createMateria("fire");

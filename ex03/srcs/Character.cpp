@@ -52,6 +52,11 @@ Character::~Character() {
 
 std::string const& Character::getName() const { return _name; }
 
+AMateria* Character::getMateria(int idx) const {
+  if (idx < 0 || idx >= 4) return NULL;
+  return _inventory[idx];
+}
+
 void Character::equip(AMateria* m) {
   if (m == NULL) return;
 
