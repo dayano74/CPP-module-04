@@ -10,7 +10,7 @@ DEPDIR := deps
 
 SRCS := main.cpp \
 	AMateria.cpp Ice.cpp Cure.cpp \
-	CharacterMock.cpp Character.cpp \
+	Character.cpp \
 	MateriaSource.cpp
 
 SRCS := $(addprefix $(SRCDIR)/,$(SRCS))
